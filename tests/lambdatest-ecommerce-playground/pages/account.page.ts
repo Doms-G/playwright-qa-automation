@@ -12,6 +12,11 @@ export class AccountPage {
         await this.page.getByRole('link', { name: 'Register', exact: true }).click();
     }
 
+    async openLoginFromMenu(): Promise<void> {
+        await this.page.getByRole('link', { name: /My account/ }).hover();
+        await this.page.getByRole('link', { name: 'Login', exact: true }).click();
+    }
+
     async startRegistration(): Promise<void> {
         const newCustomer = this.page
             .getByRole('heading', { name: 'New Customer' })
