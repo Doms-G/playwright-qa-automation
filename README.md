@@ -60,7 +60,7 @@ This repository showcases my work in test automation, including:
 
 ```bash
 git clone https://github.com/Doms-G/playwright-qa-automation.git
-cd YOUR-REPO-NAME
+cd playwright-qa-automation
 npm install
 npx playwright install
 ```
