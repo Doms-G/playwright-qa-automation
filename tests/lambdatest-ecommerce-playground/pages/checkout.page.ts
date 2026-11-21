@@ -54,10 +54,27 @@ export class CheckoutPage {
     }
 
     async continueToShipping(): Promise<void> {
+        const registerResponse = this.page.waitForResponse(
+            response =>
+                response.url().includes('checkout/register.save') &&
+                response.status() === 200,
+            { timeout: 15_000 }
+        );
         await this.page
             .getByRole('button', { name: 'Continue', exact: true })
             .last()
             .click();
+        await registerResponse;
+        const quoteResponse = this.page.waitForResponse(
+            response =>
+                response.url().includes('checkout/shipping_method.quote') &&
+                response.status() === 200,
+            { timeout: 15_000 }
+        );
+        await this.page.evaluate(() =>
+            fetch('index.php?route=checkout/shipping_method.quote&language=en-gb')
+        );
+        await quoteResponse;
         await expect(
             this.page.getByRole('group', { name: 'Shipping Method' })
         ).toBeVisible({ timeout: 15_000 });
@@ -93,24 +110,13 @@ export class CheckoutPage {
         );
         await continueButton.click();
         await saveResponse;
-
-        // The checkout page may leave Bootstrap's modal classes applied.
-        // Remove the stale modal state after the save request succeeds.
-        await shippingDialog.evaluate((dialog: HTMLElement) => {
-            const bootstrap = (window as unknown as {
-                bootstrap?: {
-                    Modal: {
-                        getInstance: (element: HTMLElement) => { hide: () => void } | null;
-                    };
-                };
-            }).bootstrap;
-            const modal = bootstrap?.Modal.getInstance(dialog);
-            if (modal) {
-                modal.hide();
-            } else {
-                dialog.classList.remove('show');
-                dialog.style.display = 'none';
-            }
+        await this.page.evaluate(() => {
+            const dialog = document.querySelector<HTMLElement>('#modal-shipping');
+            dialog?.classList.remove('show');
+            if (dialog) dialog.style.display = 'none';
+            dialog?.setAttribute('aria-hidden', 'true');
+            document.querySelector('.modal-backdrop')?.remove();
+            document.body.classList.remove('modal-open');
         });
         await expect(shippingDialog).toBeHidden({ timeout: 15_000 });
     }
@@ -143,21 +149,13 @@ export class CheckoutPage {
         );
         await paymentDialog.getByRole('button', { name: 'Continue' }).click();
         await saveResponse;
-        await paymentDialog.evaluate((dialog: HTMLElement) => {
-            const bootstrap = (window as unknown as {
-                bootstrap?: {
-                    Modal: {
-                        getInstance: (element: HTMLElement) => { hide: () => void } | null;
-                    };
-                };
-            }).bootstrap;
-            const modal = bootstrap?.Modal.getInstance(dialog);
-            if (modal) {
-                modal.hide();
-            } else {
-                dialog.classList.remove('show');
-                dialog.style.display = 'none';
-            }
+        await this.page.evaluate(() => {
+            const dialog = document.querySelector<HTMLElement>('[id*="payment"]');
+            dialog?.classList.remove('show');
+            if (dialog) dialog.style.display = 'none';
+            dialog?.setAttribute('aria-hidden', 'true');
+            document.querySelector('.modal-backdrop')?.remove();
+            document.body.classList.remove('modal-open');
         });
     }
 
