@@ -43,6 +43,14 @@ export class CheckoutPage {
 
         await country.selectOption({ label: 'Australia' });
         await expect(country.locator('option:checked')).toHaveText('Australia');
+        await expect.poll(
+            async () =>
+                region.getByRole('option', {
+                    name: 'New South Wales',
+                    exact: true,
+                }).count(),
+            { timeout: 15_000 }
+        ).toBeGreaterThan(0);
         await expect(
             region.getByRole('option', {
                 name: 'New South Wales',
