@@ -40,6 +40,4 @@ test('search for HTC and fill guest checkout details', async ({ page }) => {
     await orderSuccessPage.expectVisible();
     await orderSuccessPage.continueToStore();
     await storePage.expectHome();
-
-    await page.pause();
 });

@@ -12,6 +12,4 @@ test('request a password reset from the My Account menu', async ({ page }) => {
     await forgotPasswordPage.openFromAccountMenu();
     await forgotPasswordPage.submitEmail('doms@test.com');
     await forgotPasswordPage.expectAccountLogin();
-
-    await page.pause();
 });

@@ -10,10 +10,24 @@ export class ProductPage {
     }
 
     async addToCart(): Promise<void> {
+        const cartResponse = this.page.waitForResponse(
+            response =>
+                response.url().includes('checkout/cart.add') &&
+                response.status() === 200,
+            { timeout: 15_000 }
+        );
         await this.page.locator('#button-cart').click();
+        await cartResponse;
+        await expect(this.page.locator('.alert-success')).toContainText(
+            'Success:',
+            { timeout: 15_000 }
+        );
     }
 
     async openCart(): Promise<void> {
-        await this.page.locator('a[title="Shopping Cart"]').click();
+        await Promise.all([
+            this.page.waitForURL(/route=checkout\/cart/, { timeout: 15_000 }),
+            this.page.locator('a[title="Shopping Cart"]').click(),
+        ]);
     }
 }

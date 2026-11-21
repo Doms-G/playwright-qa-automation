@@ -46,6 +46,4 @@ test('add HTC Touch HD and iPod Touch from Deals of the Day to the cart', async 
     const cartPage = new CartPage(page);
     await cartPage.expectProduct('HTC Touch HD');
     await cartPage.expectProduct('iPod Touch');
-
-    await page.pause();
 });

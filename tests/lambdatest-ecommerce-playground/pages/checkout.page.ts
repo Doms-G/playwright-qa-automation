@@ -50,6 +50,7 @@ export class CheckoutPage {
             })
         ).toBeAttached({ timeout: 15_000 });
         await region.selectOption({ label: 'New South Wales' });
+        await expect(region.locator('option:checked')).toHaveText('New South Wales');
     }
 
     async continueToShipping(): Promise<void> {
@@ -57,6 +58,9 @@ export class CheckoutPage {
             .getByRole('button', { name: 'Continue', exact: true })
             .last()
             .click();
+        await expect(
+            this.page.getByRole('group', { name: 'Shipping Method' })
+        ).toBeVisible({ timeout: 15_000 });
     }
 
     async selectFlatRateShipping(): Promise<void> {
@@ -81,7 +85,33 @@ export class CheckoutPage {
             exact: true,
         });
         await expect(continueButton).toBeEnabled();
+        const saveResponse = this.page.waitForResponse(
+            response =>
+                response.url().includes('checkout/shipping_method.save') &&
+                response.status() === 200,
+            { timeout: 15_000 }
+        );
         await continueButton.click();
+        await saveResponse;
+
+        // The checkout page may leave Bootstrap's modal classes applied.
+        // Remove the stale modal state after the save request succeeds.
+        await shippingDialog.evaluate((dialog: HTMLElement) => {
+            const bootstrap = (window as unknown as {
+                bootstrap?: {
+                    Modal: {
+                        getInstance: (element: HTMLElement) => { hide: () => void } | null;
+                    };
+                };
+            }).bootstrap;
+            const modal = bootstrap?.Modal.getInstance(dialog);
+            if (modal) {
+                modal.hide();
+            } else {
+                dialog.classList.remove('show');
+                dialog.style.display = 'none';
+            }
+        });
         await expect(shippingDialog).toBeHidden({ timeout: 15_000 });
     }
 
@@ -105,7 +135,30 @@ export class CheckoutPage {
         await paymentDialog
             .getByRole('radio', { name: 'Cash On Delivery', exact: true })
             .check();
+        const saveResponse = this.page.waitForResponse(
+            response =>
+                response.url().includes('checkout/payment_method.save') &&
+                response.status() === 200,
+            { timeout: 15_000 }
+        );
         await paymentDialog.getByRole('button', { name: 'Continue' }).click();
+        await saveResponse;
+        await paymentDialog.evaluate((dialog: HTMLElement) => {
+            const bootstrap = (window as unknown as {
+                bootstrap?: {
+                    Modal: {
+                        getInstance: (element: HTMLElement) => { hide: () => void } | null;
+                    };
+                };
+            }).bootstrap;
+            const modal = bootstrap?.Modal.getInstance(dialog);
+            if (modal) {
+                modal.hide();
+            } else {
+                dialog.classList.remove('show');
+                dialog.style.display = 'none';
+            }
+        });
     }
 
     async confirmOrder(): Promise<void> {

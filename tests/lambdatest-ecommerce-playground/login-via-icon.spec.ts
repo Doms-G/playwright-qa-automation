@@ -15,6 +15,4 @@ test('log in through the My Account icon and verify the account dashboard', asyn
     });
 
     await accountPage.expectDashboard();
-
-    await page.pause();
 });

@@ -21,6 +21,4 @@ test('Register through the My Account dropdown menu and verify the account dashb
     await successPage.expectVisible();
     await successPage.continueToAccount();
     await accountPage.expectDashboard();
-
-    //await page.pause();
 });
