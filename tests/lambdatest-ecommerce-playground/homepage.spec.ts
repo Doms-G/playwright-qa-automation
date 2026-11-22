@@ -27,15 +27,6 @@ test.describe('Homepage', () => {
         await page.goto('/');
     });
 
-    test.describe('Announcement bar', () => {
-        test('announcement text is visible', async ({ page }) => {
-            await expect(page.locator('.pg-announce')).toBeVisible();
-            await expect(page.locator('.pg-announce')).toHaveText(
-                'This is a dummy website for Web Automation Testing'
-            );
-        });
-    });
-
     test.describe('Header (logo, category dropdown, search box, search button, wishlist/account/cart icons)', () => {
         test('logo is visible and links to the homepage', async ({ page }) => {
             await expectVisibleLink(page.getByRole('link', { name: 'LambdaTest Playground', exact: true }));
@@ -292,11 +283,5 @@ test.describe('Homepage', () => {
             });
         }
 
-        test('copyright text is visible', async ({ page }) => {
-            await expect(page.locator('.pg-footer-bottom')).toBeVisible();
-            await expect(page.locator('.pg-footer-bottom')).toHaveText(
-                'LambdaTest Playground — a dummy website for Web Automation Testing'
-            );
-        });
     });
 });

@@ -118,9 +118,3 @@ Tests run automatically on GitHub Actions on every push and pull request. See [`
 
 - Practice site: [LambdaTest Ecommerce Playground](https://ecommerce-playground.lambdatest.io/)
 - Built with [Playwright](https://playwright.dev/)
-
-## Contact
-
-**Doms-G** · [GitHub profile](https://github.com/Doms-G)
-
-<!-- Add your LinkedIn or portfolio link here if you'd like. -->
