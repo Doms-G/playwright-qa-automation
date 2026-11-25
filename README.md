@@ -29,6 +29,7 @@ This repository showcases my work in test automation, including:
 | Buttons | Checks button behavior and states |
 | Ecommerce E2E | Covers user journeys such as browsing, cart, and checkout |
 | Wish list | Covers adding, viewing, removing, and moving wish list products to the cart |
+| Order history | Covers the order list, order details, and Continue navigation |
 
 <!-- Edit this table to match your actual tests. -->
 
@@ -113,7 +114,8 @@ Tests run automatically on GitHub Actions on every push and pull request. See [`
 ## Notes
 
 - Tests target a public demo site, so occasional failures can happen if the site is slow or changes.
-- Authenticated wish list tests require `TEST_EMAIL` and `TEST_PASSWORD`. Set these as repository Actions secrets to run them in CI; they are skipped when the secrets are unavailable.
+- Authenticated wish list and order history tests require `TEST_EMAIL` and `TEST_PASSWORD`. Set these as repository Actions secrets to run them in CI; they are skipped when the secrets are unavailable.
+- Order history tests also require the test account to have at least one existing order.
 - Generated folders like `node_modules/`, `test-results/`, and `playwright-report/` are excluded through `.gitignore`.
 
 ## Credits
